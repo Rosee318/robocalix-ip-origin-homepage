@@ -1,0 +1,35 @@
+name: site-check
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  static-homepage:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Verify public homepage files
+        run: |
+          test -f index.html
+          test -f styles.css
+          test -f assets/hero.png
+          grep -q "ROBOCALIX IP Origin" index.html
+          grep -q "Public landing page only" index.html
+
+      - name: Guard against private application material
+        run: |
+          ! grep -RInE "APP_SECRET_KEY|ADMIN_PASSWORD|INTEGRATION_API_KEY|DATABASE_URL|PRIVATE_MEDIA_ROOT|BEGIN (RSA |OPENSSH |EC |DSA )?PRIVATE KEY" index.html README.md styles.css assets
+
+      - name: Smoke test static server
+        run: |
+          python3 -m http.server 8080 --bind 127.0.0.1 &
+          server_pid=$!
+          trap "kill $server_pid" EXIT
+          sleep 2
+          curl --fail --silent --show-error http://127.0.0.1:8080/ | grep -q "ROBOCALIX IP Origin"

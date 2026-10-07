@@ -107,8 +107,20 @@ a:hover {
 .hero h1 {
   font-size: clamp(2.55rem, 7vw, 5.2rem);
   line-height: 1;
-  margin: 0 0 18px;
+  margin: 0 0 16px;
   letter-spacing: 0;
+}
+
+.status-pill {
+  display: inline-flex;
+  margin: 0 0 18px;
+  border: 1px solid rgba(138, 221, 235, 0.55);
+  border-radius: 999px;
+  padding: 7px 12px;
+  background: rgba(7, 22, 36, 0.48);
+  color: #dff8fd;
+  font-size: 0.9rem;
+  font-weight: 800;
 }
 
 .hero-copy {
